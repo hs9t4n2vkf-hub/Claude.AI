@@ -3,7 +3,7 @@
 - **Reel folder:** `reels/a-boy-is-about/`
 - **Length:** 45 s · 1080×1920 · 30 fps
 - **Look:** soft 3D low-poly toy diorama. Base: library style *Low-poly Isometric Island* (`~/lemo-opuscar/styles/lowpoly-island/STYLE.md`): flat-shaded pastel facets, orthographic camera, no outlines, no black, drop-and-squash landings, pop-in props. Diorama sits on a floating street tile in a pastel gradient sky.
-- **VO file:** `audio/a-boy-is-about-vo.wav` (lines below are suggestions; the cut is timed to the recording)
+- **VO:** generated from `reels/a-boy-is-about/narration.json` (the script of record) by `bucket-shared/tts.py` into `reels/a-boy-is-about/voiceover.wav`; beats retime to it automatically. A recorded `audio/a-boy-is-about-vo.wav` can still be transcribed with `bucket-shared/vo-tools.py`.
 - **Safe zones:** key action and text stay out of the bottom 20 % and right 12 % (platform UI)
 
 ## Logline

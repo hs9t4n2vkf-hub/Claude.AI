@@ -1,0 +1,41 @@
+{
+  "_help": "Narration script for a-boy-is-about. Edit text/direction, then: python3 bucket-shared/tts.py reels/a-boy-is-about  (add --yes to make paid calls). 'beats' must match B in timeline.js (story seconds); 'at' is seconds into the beat (story time) where the line should start.",
+  "voice": {
+    "provider": "elevenlabs",
+    "elevenlabs": {
+      "voice_id": "JBFqnCBsd6RMkjVDRZzb",
+      "model_id": "eleven_multilingual_v2",
+      "voice_settings": { "stability": 0.38, "similarity_boost": 0.8, "style": 0.45, "use_speaker_boost": true, "speed": 1.0 }
+    },
+    "openai": {
+      "model": "gpt-4o-mini-tts",
+      "voice": "ballad",
+      "style": "A warm, cinematic storybook narrator. Natural and intimate, never announcer-like. Let the comedy land with small pauses."
+    },
+    "local": { "voice": "en-us", "speed": 150 }
+  },
+  "timing": { "gap": 0.25, "tail": 0.45, "min_scale": 0.8, "end_hold": 3.5 },
+  "beats": [
+    { "name": "hook", "start": 0, "end": 3 },
+    { "name": "where", "start": 3, "end": 8 },
+    { "name": "dread", "start": 8, "end": 13 },
+    { "name": "bonk", "start": 13, "end": 16 },
+    { "name": "boing", "start": 16, "end": 21 },
+    { "name": "ricochet", "start": 21, "end": 28 },
+    { "name": "catch", "start": 28, "end": 32 },
+    { "name": "twist", "start": 32, "end": 39 },
+    { "name": "end", "start": 39, "end": 45 }
+  ],
+  "lines": [
+    { "id": "hook-1", "beat": "hook", "at": 0.15, "text": "This is Milo. In about three seconds, a brick is going to land on his head.", "direction": "Calm and cosy, a hint of mischief, as if sharing a secret." },
+    { "id": "where-1", "beat": "where", "at": 0.9, "text": "Where did it come from? Nobody knows. Clouds don't usually do that.", "direction": "Genuinely puzzled, dry, a small pause before the last sentence." },
+    { "id": "dread-1", "beat": "dread", "at": 0.4, "text": "Anyone else would be in serious trouble. But Milo has a secret.", "direction": "Slow and hushed, building suspense; lean in on 'secret'." },
+    { "id": "bonk-1", "beat": "bonk", "at": 0.45, "text": "Milo is made of rubber.", "direction": "Matter-of-fact reveal, deadpan, a smile in the voice." },
+    { "id": "boing-1", "beat": "boing", "at": 1.6, "text": "Fully. Head to toe.", "direction": "Delighted, quick, playful." },
+    { "id": "ricochet-1", "beat": "ricochet", "at": 0.8, "text": "Which makes the rest of his day... a little bouncy.", "direction": "Amused, light, rhythm of a bounce on 'bouncy'." },
+    { "id": "catch-1", "beat": "catch", "at": 1.6, "text": "But he never drops the ice cream.", "direction": "Proud and warm, like a punchline." },
+    { "id": "twist-1", "beat": "twist", "at": 0.3, "text": "Then the sky got greedy.", "direction": "Ominous but playful, slower." },
+    { "id": "twist-2", "beat": "twist", "at": 3.4, "text": "Milo didn't mind.", "direction": "Bright, easy-going, a little laugh in it." },
+    { "id": "end-1", "beat": "end", "at": 0.6, "text": "Be like Milo. Bounce back.", "direction": "Warm, uplifting, cinematic closing line; let 'Bounce back' ring." }
+  ]
+}

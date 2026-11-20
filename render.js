@@ -17,7 +17,7 @@
  * `renderFrame(t)` or assigns `window.renderFrame`. It may export `duration`
  * (seconds, default 10) and `ready` (a promise to await before the first frame).
  * `import * as THREE from 'three'` and `'three/addons/...'` work out of the box.
- * If reels/<name>/audio.(mp3|wav|m4a|aac) exists it is muxed into the video.
+ * If reels/<name>/audio.(mp3|wav|m4a|aac) exists it is muxed into the video (else voiceover.wav, if present).
  */
 'use strict';
 
@@ -167,7 +167,8 @@ function findAudio(reelDir) {
     const p = path.join(reelDir, 'audio.' + ext);
     if (fs.existsSync(p)) return p;
   }
-  return null;
+  const vo = path.join(reelDir, 'voiceover.wav'); // from bucket-shared/tts.py, used until a mixed audio.* exists
+  return fs.existsSync(vo) ? vo : null;
 }
 
 function startFfmpeg(out, fps, draft, audio, from, len) {

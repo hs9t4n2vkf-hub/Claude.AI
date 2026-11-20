@@ -8,13 +8,17 @@ import { buildBrick } from '../../bucket-shared/prop-brick.js';
 import { createOverlay } from '../../bucket-shared/overlay-type.js';
 import { range, lerp, keys, arc, easeIn, easeOut, smooth, rng, wobble, noise } from '../../bucket-shared/motion.js';
 import { DURATION, B, T, camera as camAt } from './timeline.js';
+import { loadVoTiming } from '../../bucket-shared/vo-sync.js';
 
-export const duration = DURATION;
+// story time is stretched per beat to fit the voiceover (vo-timing.json from bucket-shared/tts.py)
+export let duration = DURATION;
+let warp = t => t;
 
 const stage = createStage({ sky: ['#a6d6f2', '#ffe4d2'], shadowSize: 11 });
 const { scene } = stage;
 const ov = createOverlay();
-export const ready = ov.ready;
+export const ready = Promise.all([ov.ready, loadVoTiming(new URL('./vo-timing.json', import.meta.url), B)
+  .then(vo => { if (vo) { duration = vo.duration; warp = vo.warp; } })]);
 
 const town = buildToyTown();
 scene.add(town.group);
@@ -131,7 +135,8 @@ function setScoop(worldPos) {
   kid.scoop.position.copy(worldPos);
 }
 
-export function renderFrame(t) {
+export function renderFrame(tReal) {
+  const t = warp(tReal);
   town.update(t);
   // cloud hiccups (swell + squash)
   let bump = 0; for (const h of cloudBumps) bump += wobble(t - h + 0.05, 0.22, 5, 15);

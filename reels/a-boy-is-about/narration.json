@@ -1,7 +1,7 @@
 {
   "_help": "Narration script for a-boy-is-about. Edit text/direction, then: python3 bucket-shared/tts.py reels/a-boy-is-about  (add --yes to make paid calls). 'beats' must match B in timeline.js (story seconds); 'at' is seconds into the beat (story time) where the line should start.",
   "voice": {
-    "provider": "elevenlabs",
+    "provider": "openai",
     "elevenlabs": {
       "voice_id": "JBFqnCBsd6RMkjVDRZzb",
       "model_id": "eleven_multilingual_v2",

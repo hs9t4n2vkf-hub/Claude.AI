@@ -1,6 +1,7 @@
 // Shared world: a floating low-poly toy-town street tile, plus a small dog rig.
 //
-//   const town = buildToyTown({ houses: true, trees: true, lamp: true, mailbox: true, cloud: true });
+//   const town = buildToyTown({ houses: true, trees: true, lamp: true, mailbox: true, cloud: true, skyClouds: 0 });
+// skyClouds: number of small distant clouds that drift slowly behind the tile (depth/atmosphere).
 //   scene.add(town.group); town.update(t);
 //
 // Street runs along x; +z is the front (sidewalk), houses at the back (-z). Ground top is y = 0.
@@ -51,7 +52,7 @@ function cloud(rand) {
   return g;
 }
 
-export function buildToyTown({ houses = true, trees = true, lamp = true, mailbox = true, cloud: withCloud = true, seed = 7 } = {}) {
+export function buildToyTown({ houses = true, trees = true, lamp = true, mailbox = true, cloud: withCloud = true, skyClouds = 0, seed = 7 } = {}) {
   const rand = rng(seed);
   const group = new THREE.Group();
   // base slab: grass back strip, road, sidewalk front, soil sides
@@ -102,7 +103,19 @@ export function buildToyTown({ houses = true, trees = true, lamp = true, mailbox
     parts.cloud = cloud(rand); parts.cloud.position.set(0, 12, 1); group.add(parts.cloud);
     anchors.cloudBottom = new THREE.Vector3(0, 10.6, 1.6);
   }
-  const update = t => { if (parts.cloud) parts.cloud.position.y = 12 + Math.sin(t * 1.3) * 0.15; };
+  const far = [];
+  for (let i = 0; i < skyClouds; i++) { // distant clouds on an arc behind the tile, drifting sideways
+    const c = cloud(rand), a = -0.9 + (1.8 * i) / Math.max(1, skyClouds - 1) + (rand() - 0.5) * 0.25;
+    c.scale.setScalar(0.45 + rand() * 0.35);
+    c.traverse(o => { o.castShadow = o.receiveShadow = false; });
+    c.userData = { x: Math.sin(a) * 30, y: 1.5 + rand() * 15, z: -Math.cos(a) * 30, speed: 0.12 + rand() * 0.15 };
+    group.add(c); far.push(c);
+  }
+  parts.skyClouds = far;
+  const update = t => {
+    if (parts.cloud) parts.cloud.position.y = 12 + Math.sin(t * 1.3) * 0.15;
+    for (const c of far) c.position.set(c.userData.x + t * c.userData.speed, c.userData.y + Math.sin(t * 0.4 + c.userData.z) * 0.2, c.userData.z);
+  };
   return { group, parts, anchors, update, size: { W, D } };
 }
 

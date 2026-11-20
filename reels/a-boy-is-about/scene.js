@@ -20,7 +20,7 @@ const ov = createOverlay();
 export const ready = Promise.all([ov.ready, loadVoTiming(new URL('./vo-timing.json', import.meta.url), B)
   .then(vo => { if (vo) { duration = vo.duration; warp = vo.warp; } })]);
 
-const town = buildToyTown();
+const town = buildToyTown({ skyClouds: 9 });
 scene.add(town.group);
 const A = town.anchors;
 const HERO = A.hero.clone();
@@ -71,7 +71,7 @@ function kidState(t) {
     pose.mouth = st > 2.2 ? 'o' : 'smile';
     pose.jiggle = st > B.dread ? Math.sin(st * 47) * 0.25 * range(st, 8, 10) : 0;
   } else if (t < T.spring) {
-    pose.squash = lerp(1, 0.15, range(t, T.bonk, T.bonk + 0.08)) + wobble(t - T.bonk - 0.08, 0.06, 3, 16);
+    pose.squash = lerp(1, 0.15, range(t, T.bonk, T.bonk + 0.08)) + wobble(t - T.bonk - 0.08, 0.06, 3, 16) + Math.sin(t * 4) * 0.012 * range(t, 14, 14.6); // flat, but still breathing
     pose.mouth = 'o'; pose.lookUp = 0.4; pose.jiggle = wobble(t - T.bonk, 0.8, 3, 20);
   } else if (t < B.ricochet) {
     const s = t - T.spring - 0.18;

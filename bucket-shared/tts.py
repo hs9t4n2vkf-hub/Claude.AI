@@ -5,6 +5,7 @@
   python3 bucket-shared/tts.py reels/<name> --yes           # generate missing/changed lines (paid)
   python3 bucket-shared/tts.py reels/<name> --yes --redo hook-1,end-1   # new take of some lines
   python3 bucket-shared/tts.py reels/<name> --provider local          # free offline test voice (espeak-ng)
+  python3 bucket-shared/tts.py reels/<name> --estimate      # no audio at all: time lines from their word count
 
 Reads   reels/<name>/narration.json   (voice settings, beats in story seconds, lines)
 Writes  reels/<name>/vo-clips/<id>-<hash>.wav   one cached clip per line (only changed lines are re-made)
@@ -89,6 +90,34 @@ def clean_clip(src, dst):
 
 
 # ---------- timing ----------
+def estimate(text, wps=2.6):
+    """Seconds a calm narrator (e.g. ElevenLabs) needs for a line: words at `wps`, plus pauses."""
+    words = len(text.split())
+    pauses = text.count(",") * 0.15 + text.count("...") * 0.5 + text.count("…") * 0.5 + \
+        max(0, sum(text.count(c) for c in ".?!") - text.count("...") * 3 - 1) * 0.35
+    return round(words / wps + pauses, 2)
+
+
+def export_deliverables(reel, spec, beats, placed, total, out_dir):
+    """narration_script.txt (paste into a TTS tool) and scene_timestamps.json (scenes + their lines)."""
+    out_dir.mkdir(parents=True, exist_ok=True)
+    fmt = lambda x: f"{int(x // 60)}:{x % 60:05.2f}"
+    txt = [f"{reel.name} - narration script ({total:.1f} s)", ""]
+    for p in placed:
+        line = next(l for l in spec["lines"] if l["id"] == p["id"])
+        txt += [f"[{fmt(p['start'])} - {fmt(p['end'])}]  ({line.get('direction', '')})", line["text"], ""]
+    txt += ["--- plain text (paste as one block) ---", "", "\n\n".join(l["text"] for l in spec["lines"]), ""]
+    (out_dir / "narration_script.txt").write_text("\n".join(txt))
+    scenes = []
+    for b in beats:
+        segs = [{"id": p["id"], "start": p["start"], "end": p["end"], "text": p["text"]}
+                for p in placed if b["real"][0] <= p["start"] < b["real"][1]]
+        scenes.append({"scene": b["name"], "start": b["real"][0], "end": b["real"][1],
+                       "duration": round(b["real"][1] - b["real"][0], 3), "narration": segs})
+    (out_dir / "scene_timestamps.json").write_text(json.dumps(
+        {"reel": reel.name, "fps": 30, "resolution": "1080x1920", "duration": total, "scenes": scenes}, indent=1))
+    print(f"wrote {out_dir.relative_to(ROOT)}/narration_script.txt and scene_timestamps.json")
+
 def retime(beats, lines, dur, t):
     """Fit each beat to its narration. Returns beats with real start/end and lines with real start/end.
     A beat stretches if its lines need more room, and shrinks (to min_scale) if they need less."""
@@ -120,6 +149,7 @@ def main():
     ap.add_argument("--yes", action="store_true", help="allow paid API calls")
     ap.add_argument("--provider", help="override narration.json voice.provider (elevenlabs | openai | local)")
     ap.add_argument("--redo", default="", help="comma-separated line ids to generate again even if cached")
+    ap.add_argument("--estimate", action="store_true", help="no audio: estimate line lengths, write timing + script files only")
     a = ap.parse_args()
     load_dotenv()
 
@@ -127,6 +157,15 @@ def main():
     spec = json.loads((reel / "narration.json").read_text())
     cfg, lines, beats, timing = spec["voice"], spec["lines"], spec["beats"], spec["timing"]
     provider = a.provider or cfg["provider"]
+    if a.estimate:  # silent mode: no clips, no API, no wav
+        dur = {l["id"]: estimate(l["text"]) for l in lines}
+        new_beats, placed, total = retime(beats, lines, dur, timing)
+        (reel / "vo-timing.json").write_text(json.dumps({"provider": "estimate", "duration": total, "beats": new_beats, "lines": placed}, indent=1))
+        print(f"estimated narration timing: {total:.2f}s (story was {beats[-1]['end']}s)")
+        for b in new_beats:
+            print(f"  {b['name']:9s} {b['real'][0]:6.2f}-{b['real'][1]:6.2f}  x{(b['real'][1] - b['real'][0]) / (b['story'][1] - b['story'][0]):.2f}")
+        export_deliverables(reel, spec, new_beats, placed, total, ROOT / "build" / reel.name)
+        return
     redo = {x for x in a.redo.split(",") if x}
     clips = reel / "vo-clips"; clips.mkdir(exist_ok=True)
 
@@ -179,6 +218,7 @@ def main():
         vo.level(str(raw_mix), str(reel / "voiceover.wav"), -16)
 
     timing_file.write_text(json.dumps({"provider": provider, "duration": total, "beats": new_beats, "lines": placed}, indent=1))
+    export_deliverables(reel, spec, new_beats, placed, total, ROOT / "build" / reel.name)
     print(f"\nvoiceover.wav: {total:.2f}s (story was {beats[-1]['end']}s)")
     for b in new_beats:
         L, R = b["story"][1] - b["story"][0], b["real"][1] - b["real"][0]

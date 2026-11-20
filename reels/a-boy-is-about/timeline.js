@@ -37,7 +37,7 @@ export function camera(t, kidPos) {
     return view([lerp(-0.6, 0.2, range(t, 8, 13)), 3.4, 2.9], 9.4, 4, 8);
   if (t < B.boing) { // 4 · BONK close-up with a short shake
     const sh = Math.max(0, 1 - (t - T.bonk) / 0.2) * (t >= T.bonk ? 1 : 0);
-    return view([-0.6, 1.1, 2.9], 6.8, 8, 18, { offset: [noise(t * 9, 1) * 0.25 * sh, noise(t * 9, 2) * 0.25 * sh] });
+    return view([lerp(-0.6, -0.8, range(t, 13, 16)), 1.1, 2.9], lerp(6.8, 6.35, smooth(range(t, 13.3, 16))), 8 + range(t, 13, 16) * 3, 18, { offset: [noise(t * 9, 1) * 0.25 * sh, noise(t * 9, 2) * 0.25 * sh] });
   }
   if (t < B.ricochet) // 5 · low angle, tilt up after the brick and back
     return view(keys(t, [[16, [-0.45, 2.3, 2.9]], [16.3, [-0.45, 3.6, 2.9]], [17.3, [-0.2, 8.5, 2.9]], [18.3, [-0.45, 2.8, 2.9]]], easeInOut), 8.4, 8, 5);
@@ -47,7 +47,7 @@ export function camera(t, kidPos) {
     return view([0, 2.6, 0.3], 17.5, 30, 26);
   }
   if (t < B.twist) // 7 · the catch: close-up
-    return view([-0.25, 1.9, 2.9], 6.2, 8, 10);
+    return view([-0.25, lerp(1.9, 2.05, range(t, 28, 32)), 2.9], lerp(6.2, 5.3, smooth(range(t, 28.6, 32))), lerp(8, 2, range(t, 28, 32)), 10);
   if (t < B.end) // 8 · twist: pull back to a high wide
     return view(keys(t, [[32, [-0.25, 1.9, 2.9]], [33.4, [0, 4.6, 1.6]], [39, [0, 5.8, 1]]], easeInOut),
       keys(t, [[32, 6.2], [33.4, 14], [39, 19.5]], easeInOut), lerp(8, -8, range(t, 32, 39)), lerp(10, 28, smooth(range(t, 32, 35))));

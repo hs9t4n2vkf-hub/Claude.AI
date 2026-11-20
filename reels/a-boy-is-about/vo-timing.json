@@ -1,0 +1,167 @@
+{
+ "provider": "estimate",
+ "duration": 50.033,
+ "beats": [
+  {
+   "name": "hook",
+   "story": [
+    0,
+    3
+   ],
+   "real": [
+    0.0,
+    7.474
+   ]
+  },
+  {
+   "name": "where",
+   "story": [
+    3,
+    8
+   ],
+   "real": [
+    7.474,
+    14.51
+   ]
+  },
+  {
+   "name": "dread",
+   "story": [
+    8,
+    13
+   ],
+   "real": [
+    14.51,
+    20.401
+   ]
+  },
+  {
+   "name": "bonk",
+   "story": [
+    13,
+    16
+   ],
+   "real": [
+    20.401,
+    23.19
+   ]
+  },
+  {
+   "name": "boing",
+   "story": [
+    16,
+    21
+   ],
+   "real": [
+    23.19,
+    27.19
+   ]
+  },
+  {
+   "name": "ricochet",
+   "story": [
+    21,
+    28
+   ],
+   "real": [
+    27.19,
+    32.79
+   ]
+  },
+  {
+   "name": "catch",
+   "story": [
+    28,
+    32
+   ],
+   "real": [
+    32.79,
+    38.022
+   ]
+  },
+  {
+   "name": "twist",
+   "story": [
+    32,
+    39
+   ],
+   "real": [
+    38.022,
+    43.622
+   ]
+  },
+  {
+   "name": "end",
+   "story": [
+    39,
+    45
+   ],
+   "real": [
+    43.622,
+    50.033
+   ]
+  }
+ ],
+ "lines": [
+  {
+   "id": "hook-1",
+   "text": "This is Milo. In about three seconds, a brick is going to land on his head.",
+   "start": 0.374,
+   "end": 7.024
+  },
+  {
+   "id": "where-1",
+   "text": "Where did it come from? Nobody knows. Clouds don't usually do that.",
+   "start": 8.74,
+   "end": 14.06
+  },
+  {
+   "id": "dread-1",
+   "text": "Anyone else would be in serious trouble. But Milo has a secret.",
+   "start": 14.981,
+   "end": 19.951
+  },
+  {
+   "id": "bonk-1",
+   "text": "Milo is made of rubber.",
+   "start": 20.82,
+   "end": 22.74
+  },
+  {
+   "id": "boing-1",
+   "text": "Fully. Head to toe.",
+   "start": 24.47,
+   "end": 26.36
+  },
+  {
+   "id": "ricochet-1",
+   "text": "Which makes the rest of his day... a little bouncy.",
+   "start": 27.83,
+   "end": 32.18
+  },
+  {
+   "id": "catch-1",
+   "text": "But he never drops the ice cream.",
+   "start": 34.882,
+   "end": 37.572
+  },
+  {
+   "id": "twist-1",
+   "text": "Then the sky got greedy.",
+   "start": 38.262,
+   "end": 40.182
+  },
+  {
+   "id": "twist-2",
+   "text": "Milo didn't mind.",
+   "start": 40.742,
+   "end": 41.892
+  },
+  {
+   "id": "end-1",
+   "text": "Be like Milo. Bounce back.",
+   "start": 44.263,
+   "end": 46.533
+  }
+ ]
+}

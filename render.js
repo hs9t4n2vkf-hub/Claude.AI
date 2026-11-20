@@ -12,6 +12,7 @@
  *           --fps <n>             frame rate (default 30, draft 15)
  *           --workers <n>         parallel browser tabs (scene must be a pure function of t)
  *           --count <n>           number of frames on the contact sheet (default 12)
+ *           --silent              never add an audio track, even if audio files exist
  *
  * A reel is reels/<name>/scene.js, an ES module that either exports
  * `renderFrame(t)` or assigns `window.renderFrame`. It may export `duration`
@@ -37,6 +38,7 @@ function parseArgs(argv) {
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i];
     if (a === '--draft') opts.draft = true;
+    else if (a === '--silent') opts.silent = true;
     else if (a.startsWith('--')) opts[a.slice(2)] = argv[++i];
     else opts.positional.push(a);
   }
@@ -213,7 +215,7 @@ async function renderVideo(ctx, opts) {
   const partial = opts.from != null || opts.to != null;
   const suffix = (draft ? '-draft' : '') + (partial ? `-${fmtTime(from)}-${fmtTime(to)}` : '');
   const out = path.join(ROOT, 'build', `${name}${suffix}.mp4`);
-  const audio = findAudio(reelDir);
+  const audio = opts.silent ? null : findAudio(reelDir);
   const { ff, done } = startFfmpeg(out, fps, draft, audio, from, to - from);
 
   console.log(`Rendering ${name}: ${fmtTime(from)}s -> ${fmtTime(to)}s, ${frames} frames @ ${fps}fps, ${size.width}x${size.height}${draft ? ' (draft)' : ''}${workers > 1 ? `, ${workers} workers` : ''}`);
